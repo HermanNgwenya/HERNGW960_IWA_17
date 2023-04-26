@@ -23,7 +23,7 @@ const createArray = (length) => {
     const result = []
 
     for (let i = 0; i < length; i ++){
-        result.push(null);
+        result.push(i);
     }
     return result;
 }
@@ -33,7 +33,7 @@ const createData = () => {
     const current = new Date();
     current.setDate(1);
 
-    const startDay = current.day;
+    const startDay = current.getDay();
     const daysInMonth = getDaysInMonth(current);
 
     const weeks = createArray(5);
@@ -52,31 +52,31 @@ const createData = () => {
             let isValid = day > 0 && day <= daysInMonth;
 
             value[0].days.push({
-                dayOfWeek: parseInt(dayIndex) + 1,
-                value: isValid ? day: null,
+                dayOfWeek: parseInt(dayIndex) - 1,
+                value: isValid ? day: daysInMonth,
             });
         }
 
         result.push(value);
     }
         return result;
-};
+}
 
-const addCell = (existing, classString, value) => {
+function addCell(existing, classString, value) {
     return /* html */ `
         <td ${classString}>
             ${value}
         </td>
         ${existing}
     `;
-};
+}
 
 const createHtml = (data) => {
     let result = '';
 
     for (let {week, days} in data){
-        let inner = "";
-        inner = addCell(inner, 'table__cell table__cell_sidebar', `Week ${week}`);
+        let innerHTML = "";
+        innerHTML = addCell(innerHTML, 'table__cell table__cell_sidebar', `Week ${week}`);
     
         for ( let {dayOfWeek, value} in days) {
             let classString = "table__cell";
@@ -90,14 +90,15 @@ const createHtml = (data) => {
             if (isWeekend) classString = `${classString} table__cell_weekend`;
             if (isAlternate) classString = `${classString} table__cell_alternate`;
 
-            inner = addCell(inner, classString, value);
+            innerHTML = addCell(innerHTML, classString, value);
         }
 
-        result += `<tr>${inner}</tr>`;
+        result += `<tr>${innerHTML}</tr>`;
     }
 
     return result;
 };
+
 
 // Only edit above
 
